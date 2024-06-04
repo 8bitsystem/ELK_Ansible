@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    
+    parameters {
+        choice(name: 'CHOICE', choices: ['elasticsearch', 'kibana', 'filebeat', 'logstash', 'quit'], description: 'Select the service to run')
+    }
+    
+    stages {
+        stage('Give Permission') {
+            steps {
+                // Give execution permission to execute_playbooks script
+                sh 'chmod +x /home/richa/Ansible1/execute_playbooks.sh'
+            }
+        }
+        
+        stage('Execute Playbooks') {
+            steps {
+                // Execute the script with the selected choice
+                sh "/home/richa/Ansible1/execute_playbooks.sh ${params.CHOICE}"
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Print a message indicating successful execution
+            echo 'Pipeline executed successfully.'
+        }
+    }
+}
